@@ -1,0 +1,12 @@
+#!/bin/bash
+set -e
+
+# Check params
+if [ $# -lt 1 ]; then
+  echo "No arguments supplied. Supply <aiko.yml>"
+  exit 1
+fi
+
+
+echo "Running Aiko-tests: $1"
+java -Dfile.encoding=UTF-8 -jar /opt/application/application.jar -f $1

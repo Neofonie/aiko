@@ -1,0 +1,48 @@
+- group:
+  - name: 'negative tests on fam via pzn'
+  - domain: 'http://proxy-http.service:8080'
+
+  - test:
+    - name: 'check without parameters'
+      operation: 'GET'
+      uri: '/drug/drugs'
+      request:
+        - headers:
+          - Accept: 'application/json'
+      response:
+        - headers:
+          - Content-Type: 'application/json; charset=utf-8'
+        - status: 422
+        - body: '{"status":422,"developerMessage":"The name and query parameter were both given or both empty. Please make sure you specify either a name or query parameter with a value!"}'
+
+- group:
+  - name: 'checks on wrong operations for /drug/drugs/pzn'
+  - domain: 'http://proxy-http.service:8080'
+
+  - test:
+    - name: 'put instead of get'
+      operation: 'PUT'
+      uri: '/drug/drugs/410324'
+      request:
+        - headers:
+          - Accept: 'application/json'
+      response:
+        - headers:
+          - Content-Type: 'application/json; charset=utf-8'
+          - Allow: 'DELETE, GET'
+        - status: 405
+        - body: '{"status":405,"developerMessage":"Please change your http method to one of the following methods: DELETE, GET"}'
+
+  - test:
+    - name: 'post instead of get'
+      operation: 'POST'
+      uri: '/drug/drugs/410324'
+      request:
+        - headers:
+          - Accept: 'application/json'
+      response:
+        - headers:
+          - Content-Type: 'application/json; charset=utf-8'
+          - Allow: 'DELETE, GET'
+        - status: 405
+        - body: '{"status":405,"developerMessage":"Please change your http method to one of the following methods: DELETE, GET"}'

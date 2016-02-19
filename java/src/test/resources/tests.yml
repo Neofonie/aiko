@@ -1,0 +1,54 @@
+groups:
+  - name: multipleTest
+    domain: http://localhost:8111
+    tests:
+    - name: userTestFirstStep
+      retry:
+        count: 3
+        delay: 3000
+      request:
+        method: GET
+        uri: /users/1
+        headers:
+          Accept: 'application/json'
+        body: '{}'
+      response:
+        headers:
+          Content-Type: 'application/json; charset=utf-8'
+        status: 200
+    - name: userTestSecondStep
+      retry:
+        count: 1
+        delay: 300
+      request:
+        method: DELETE
+        uri: /users/2
+        headers:
+          Accept: 'application/json'
+          Content-Type: 'application/json'
+          Authorization: 'Basic dfdf'
+      response:
+        headers:
+          Content-Type: 'application/json; charset=utf-8'
+        status: 204
+
+  - name: singleTest
+    domain: http://localhost:8111
+    tests:
+    - request:
+        method: POST
+        body: '@testdata.json'
+        uri: /posts
+        headers:
+          Content-Type: 'application/json'
+          Authorization: 'Basic dfdf'
+      response:
+        headers:
+          Content-Type: 'application/json; charset=utf-8'
+        body: '{
+                 "id": 1,
+                 "name": "Leanne Graham",
+                 "username": "Bret",
+                 "email": "Sincere@april.biz"
+               }'
+        status: 200
