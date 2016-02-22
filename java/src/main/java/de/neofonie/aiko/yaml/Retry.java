@@ -39,9 +39,6 @@ public class Retry {
      */
     private int delay;
 
-    public Retry() {
-    }
-
     public int getCount() {
         return count;
     }

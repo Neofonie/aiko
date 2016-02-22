@@ -48,9 +48,6 @@ public class TestCase {
      */
     private ResponseDefinition response;
 
-    public TestCase() {
-    }
-
     public String getName() {
         return name;
     }

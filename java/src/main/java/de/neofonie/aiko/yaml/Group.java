@@ -45,9 +45,6 @@ public class Group {
      */
     private List<TestCase> tests;
 
-    public Group() {
-    }
-
     public String getName() {
         return name;
     }

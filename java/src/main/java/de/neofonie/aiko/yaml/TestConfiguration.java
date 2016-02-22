@@ -39,9 +39,6 @@ public class TestConfiguration {
      */
     private List<Group> groups;
 
-    public TestConfiguration() {
-    }
-
     public List<Group> getGroups() {
         return groups;
     }

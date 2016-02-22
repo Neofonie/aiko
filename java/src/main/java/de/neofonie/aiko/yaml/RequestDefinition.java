@@ -59,9 +59,6 @@ public class RequestDefinition {
      */
     private String uri;
 
-    public RequestDefinition() {
-    }
-
     public void setHeaders(Map<String, String> headers) {
         this.headers = headers;
     }

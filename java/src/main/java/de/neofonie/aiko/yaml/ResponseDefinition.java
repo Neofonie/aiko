@@ -55,9 +55,6 @@ public class ResponseDefinition {
      */
     private int status;
 
-    public ResponseDefinition() {
-    }
-
     public void setHeaders(Map<String, String> headers) {
         this.headers = headers;
     }
