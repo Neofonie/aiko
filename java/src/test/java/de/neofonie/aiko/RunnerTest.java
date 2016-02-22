@@ -86,6 +86,13 @@ public class RunnerTest {
     }
 
     @Test
+    public void shouldReturnTwoStatusCodeOnNotFoundBodyFileTests() throws IOException, ParseException {
+        final int exitCode = Runner.start("-f", TestUtil.getTestUserDir() + "body-not-found-tests.yml");
+
+        assertThat(exitCode).isEqualTo(2);
+    }
+
+    @Test
     public void shouldRetryFailingTest() throws IOException, ParseException {
         final long startTimeMillis = System.currentTimeMillis();
         final int exitCode = Runner.start("-f", TestUtil.getTestUserDir() + "retry-tests.yml");
