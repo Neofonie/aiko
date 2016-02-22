@@ -73,21 +73,21 @@ public class RunnerTest {
 
     @Test
     public void shouldReturnZeroStatusCodeOnSuccessfulTests() throws IOException, ParseException {
-        final int exitCode = Runner.start("-f", TestUtil.getTestUserDir() + "all-methods-tests.yml");
+        final int exitCode = Runner.executeAikoTests("-f", TestUtil.getTestUserDir() + "all-methods-tests.yml");
 
         assertThat(exitCode).isEqualTo(0);
     }
 
     @Test
     public void shouldReturnTwoStatusCodeOnFailedTests() throws IOException, ParseException {
-        final int exitCode = Runner.start("-f", TestUtil.getTestUserDir() + "fail-tests.yml");
+        final int exitCode = Runner.executeAikoTests("-f", TestUtil.getTestUserDir() + "fail-tests.yml");
 
         assertThat(exitCode).isEqualTo(2);
     }
 
     @Test
     public void shouldReturnTwoStatusCodeOnNotFoundBodyFileTests() throws IOException, ParseException {
-        final int exitCode = Runner.start("-f", TestUtil.getTestUserDir() + "body-not-found-tests.yml");
+        final int exitCode = Runner.executeAikoTests("-f", TestUtil.getTestUserDir() + "body-not-found-tests.yml");
 
         assertThat(exitCode).isEqualTo(2);
     }
@@ -95,7 +95,7 @@ public class RunnerTest {
     @Test
     public void shouldRetryFailingTest() throws IOException, ParseException {
         final long startTimeMillis = System.currentTimeMillis();
-        final int exitCode = Runner.start("-f", TestUtil.getTestUserDir() + "retry-tests.yml");
+        final int exitCode = Runner.executeAikoTests("-f", TestUtil.getTestUserDir() + "retry-tests.yml");
         final long durationMillis = System.currentTimeMillis() - startTimeMillis;
         final long expectedDuration = 3000; //(one normal try + three retry) * retry delay
 
@@ -105,18 +105,21 @@ public class RunnerTest {
 
     @Test
     public void shouldThrowExceptionWithoutArgs() throws IOException, ParseException {
-        assertThatThrownBy(Runner::start).isInstanceOf(MissingOptionException.class);
+        final int exitCode = Runner.executeAikoTests();
+
+        assertThat(exitCode).isEqualTo(1);
     }
 
     @Test
     public void shouldThrowExceptionWithUnknownConfig() throws IOException, ParseException {
-        assertThatThrownBy(() -> Runner.start("-f", TestUtil.getTestUserDir() + "unknown-tests.yml"))
-                .isInstanceOf(FileNotFoundException.class);
+        final int exitCode = Runner.executeAikoTests("-f", TestUtil.getTestUserDir() + "unknown-tests.yml");
+
+        assertThat(exitCode).isEqualTo(2);
     }
 
     @Test
     public void shouldThrowExceptionUnreachableServer() throws IOException, ParseException {
-        assertThatThrownBy(() -> Runner.start("-f", TestUtil.getTestUserDir() + "wrong-domain-tests.yml"))
+        assertThatThrownBy(() -> Runner.executeAikoTests("-f", TestUtil.getTestUserDir() + "wrong-domain-tests.yml"))
                 .isInstanceOf(ClientHandlerException.class);
     }
 
