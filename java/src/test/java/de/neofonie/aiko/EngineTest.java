@@ -60,8 +60,24 @@ public class EngineTest {
     }
 
     @Test
+    public void shouldReturnFalseWithNoRequest() throws Exception {
+        testCase.setRequest(null);
+        final boolean result = new Engine(TestUtil.getTestContext(), group, testCase).executeTest();
+
+        assertThat(result).isFalse();
+    }
+
+    @Test
     public void shouldReturnFalseWithInvalidResponse() throws Exception {
         testCase.getResponse().setStatus(0);
+        final boolean result = new Engine(TestUtil.getTestContext(), group, testCase).executeTest();
+
+        assertThat(result).isFalse();
+    }
+
+    @Test
+    public void shouldReturnFalseWithNoResponse() throws Exception {
+        testCase.setResponse(null);
         final boolean result = new Engine(TestUtil.getTestContext(), group, testCase).executeTest();
 
         assertThat(result).isFalse();
