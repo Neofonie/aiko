@@ -28,6 +28,9 @@ import de.neofonie.aiko.yaml.TestCase;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 
 import java.io.IOException;
@@ -36,6 +39,9 @@ import java.io.IOException;
  * This runner executes all test from the test configuration.
  */
 public class Runner {
+
+    private final static Options AIKO_OPTIONS = getOptions();
+    private final static String HEADER = "Neofonie Aiko - Test your REST interface";
 
     /**
      * Total number of tests run.
@@ -48,6 +54,30 @@ public class Runner {
     public static int FAILED_TEST_COUNTER = 0;
 
     /**
+     * Starts all tests and returns an exit code. If all tests were successful 0 is returned.
+     * If the arguments where not parseable it returns 1. If one or more tests failed or an exception occurred it
+     * returns 2.
+     *
+     * @param args command line arguments that specify the configuration file
+     * @return 0 - all tests successful | 1 - args not parseable | 2 - at least one test failed or exception
+     */
+    public static int executeAikoTests(final String... args) {
+        System.out.println(HEADER);
+
+        try {
+            return startTests(args);
+        } catch (ParseException e) {
+            HelpFormatter showHelp = new HelpFormatter();
+            showHelp.printHelp("java -jar aiko.jar ", "Neofonie Aiko", AIKO_OPTIONS, "");
+            System.out.println("Parse Error: " + e.getMessage());
+            return 1;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return 2;
+        }
+    }
+
+    /**
      * Parses the given arguments, starts all tests and returns an exit code. If all tests were successful 0 is returned
      * otherwise 2.
      *
@@ -56,9 +86,9 @@ public class Runner {
      * @throws ParseException
      * @throws IOException
      */
-    public static int start(final String... args) throws ParseException, IOException {
+    private static int startTests(final String... args) throws ParseException, IOException {
         final CommandLineParser parser = new DefaultParser();
-        final CommandLine cmd = parser.parse(Aiko.AIKO_OPTIONS, args);
+        final CommandLine cmd = parser.parse(AIKO_OPTIONS, args);
         final String configurationFile = cmd.getOptionValue("f");
         final Context context = new Context(System.getProperty("user.dir"), configurationFile);
         int exitCode = 0;
@@ -70,6 +100,13 @@ public class Runner {
         }
 
         return exitCode;
+    }
+
+    private static Options getOptions() {
+        final Options options = new Options();
+        options.addOption(Option.builder("f").required().hasArg().desc("the YAML file to test").build());
+
+        return options;
     }
 
     private static boolean runAllTests(final Context context) {

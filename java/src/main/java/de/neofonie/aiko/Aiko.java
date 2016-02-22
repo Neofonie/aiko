@@ -23,43 +23,13 @@ SOFTWARE.
  */
 package de.neofonie.aiko;
 
-import java.io.IOException;
-
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-
 /**
  * Entry point of the application.
  */
 public class Aiko {
 
-    public final static Options AIKO_OPTIONS = getOptions();
-
-    private final static String HEADER = "Neofonie Aiko - Test your REST interface";
-
     public static void main(final String... args) {
-        System.out.println(HEADER);
-
-        try {
-            final int exitCode = Runner.start(args);
-            System.exit(exitCode);
-        } catch (ParseException e) {
-            HelpFormatter showHelp = new HelpFormatter();            
-            showHelp.printHelp("java -jar aiko.jar ", "Neofonie Aiko", AIKO_OPTIONS, "");
-            System.out.println("Parse Error: " + e.getMessage());
-            System.exit(1);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(2);
-        }
-    }
-
-    private static Options getOptions() {
-        final Options options = new Options();
-        options.addOption(Option.builder("f").required().hasArg().desc("the YAML file to test").build());
-
-        return options;
+        final int exitCode = Runner.executeAikoTests(args);
+        System.exit(exitCode);
     }
 }
