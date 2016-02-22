@@ -132,7 +132,7 @@ public class RequestDefinition {
     private void addHeaders(WebResource.Builder requestBuilder) {
         if (headers != null) {
             for (Map.Entry<String, String> entry : headers.entrySet()) {
-                requestBuilder = requestBuilder.header(entry.getKey(), entry.getValue());
+                requestBuilder.header(entry.getKey(), entry.getValue());
                 System.out.println("\t\t  " + entry.getKey() + ": " + entry.getValue());
             }
         }
