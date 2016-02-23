@@ -43,4 +43,4 @@ You can find them in java/src/test/resources looking like:
 * There is a configurable retry mechanism rechecking per testcase.
 * There already are a few test configurations inside java/src/test/resources to show what is possible.
 
-Have fun!
+Have fun! :)
