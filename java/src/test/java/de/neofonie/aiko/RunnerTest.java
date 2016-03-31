@@ -79,6 +79,13 @@ public class RunnerTest {
     }
 
     @Test
+    public void shouldReturnTwoStatusCodeOnOneFailedTestGroupTests() throws IOException, ParseException {
+        final int exitCode = Runner.executeAikoTests("-f", TestUtil.getTestUserDir() + "first-group-fails-second-succeeded.yml");
+
+        assertThat(exitCode).isEqualTo(2);
+    }
+
+    @Test
     public void shouldReturnTwoStatusCodeOnFailedTests() throws IOException, ParseException {
         final int exitCode = Runner.executeAikoTests("-f", TestUtil.getTestUserDir() + "fail-tests.yml");
 
