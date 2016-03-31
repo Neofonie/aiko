@@ -112,7 +112,8 @@ public class Runner {
     private static boolean runAllTests(final Context context) {
         boolean result = true;
 
-        for (Group group : context.getTestGroups()) {
+        for (int i = 0; i < context.getTestGroups().size() && result; i++) {
+            final Group group = context.getTestGroups().get(i);
             System.out.print("Group: '" + group.getName() + "': \n");
 
             try {
@@ -121,10 +122,6 @@ public class Runner {
                 System.out.println("[ERROR] Test execution failed. Reason: " + e.getMessage());
                 e.printStackTrace();
                 result = false;
-            }
-
-            if (!result) {
-                break;
             }
 
             System.out.println("\n");
