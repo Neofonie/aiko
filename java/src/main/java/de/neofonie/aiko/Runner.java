@@ -120,7 +120,11 @@ public class Runner {
             } catch (IOException e) {
                 System.out.println("[ERROR] Test execution failed. Reason: " + e.getMessage());
                 e.printStackTrace();
-                return false;
+                result = false;
+            }
+
+            if (!result) {
+                break;
             }
 
             System.out.println("\n");
