@@ -1,0 +1,41 @@
+groups:
+  - name: modify tests
+    domain: http://localhost:8111
+    tests:
+    - name: post test
+      request:
+        method: POST
+        uri: /users
+        body: '@testdata.json'
+        headers:
+          Accept: 'application/json'
+          Content-Type: 'application/json'
+      response:
+        headers:
+          Content-Type: 'application/json; charset=utf-8'
+        status: 200
+        body: '{
+                 "id": 1,
+                 "name": "Leanne Graham",
+                 "username": "Bret",
+                 "email": "Sincere@april.biz"
+               }'
+
+  - name: read test
+    domain: http://localhost:8111
+    tests:
+    - request:
+        method: GET
+        uri: /users/1
+        headers:
+          Accept: 'application/json'
+      response:
+        headers:
+          Content-Type: 'application/json; charset=utf-8'
+        body: '{
+                 "id": 1,
+                 "name": "Leanne Graham",
+                 "username": "Bret",
+                 "email": "Sincere@april.biz"
+               }'
+        status: 200
