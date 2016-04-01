@@ -1,10 +1,14 @@
 # Pull base image.
 FROM williamyeh/java8
 ENV TERM screen
-ENV AIKO_LATEST_VERSION=$(curl -s https://dl.bintray.com/neofonie/maven/de/neofonie/aiko/maven-metadata.xml | grep -oP '(?<=<latest>).*?(?=</latest>)')
+
 
 # Add application
-ADD https://dl.bintray.com/neofonie/maven/de/neofonie/aiko/${AIKO_LATEST_VERSION}/aiko-${AIKO_LATEST_VERSION}.jar 	/opt/application/application.jar
+RUN AIKO_LATEST_VERSION=$(wget -q -O- https://dl.bintray.com/neofonie/maven/de/neofonie/aiko/maven-metadata.xml | grep -oP '(?<=<latest>).*?(?=</latest>)') \
+ && mkdir -p /opt/application/ \
+ && cd /opt/application/ \
+ && wget -q https://dl.bintray.com/neofonie/maven/de/neofonie/aiko/$AIKO_LATEST_VERSION/aiko-$AIKO_LATEST_VERSION.jar \
+ && mv aiko-$AIKO_LATEST_VERSION.jar application.jar
 ADD payloads/aiko          	/usr/local/bin/aiko
 RUN chmod a+x /usr/local/bin/aiko
 
