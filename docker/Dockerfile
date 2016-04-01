@@ -3,7 +3,7 @@ FROM williamyeh/java8
 ENV TERM screen
 
 # Add application
-ADD payloads/application.jar 	/opt/application/application.jar
+ADD payloads/application.jar 	https://dl.bintray.com/neofonie/maven/de/neofonie/aiko/1.2/aiko-1.2.jar
 ADD payloads/aiko          	/usr/local/bin/aiko
 RUN chmod a+x /usr/local/bin/aiko
 
