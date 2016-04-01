@@ -202,7 +202,6 @@
                             </transformers>
                             <artifactSet>
                             </artifactSet>
-                            <outputFile>${project.build.directory}/aiko.jar</outputFile>
                         </configuration>
                     </execution>
                 </executions>
