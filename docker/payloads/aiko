@@ -9,4 +9,4 @@ fi
 
 
 echo "Running Aiko-tests: $1"
-java -Dfile.encoding=UTF-8 -jar /opt/application/application.jar -f $1
+java -Dfile.encoding=UTF-8 -jar /opt/application/application.jar de.neofonie.aiko.Aiko -f $1
