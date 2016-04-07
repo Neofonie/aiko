@@ -1,0 +1,16 @@
+groups:
+  - name: image tests
+    domain: http://localhost:8111
+    tests:
+    - name: get image test
+      request:
+        method: GET
+        uri: /images/1
+        headers:
+          Accept: 'image/png'
+          Content-Type: 'image/png'
+      response:
+        headers:
+          Content-Type: 'image/png'
+        status: 200
+        body: '@example.png'

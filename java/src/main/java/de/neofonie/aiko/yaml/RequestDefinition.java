@@ -27,6 +27,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
 import de.neofonie.aiko.Context;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -94,16 +95,16 @@ public class RequestDefinition {
     public ClientResponse performRequest(final String domain, final Context context) throws IOException {
         final WebResource webResource = getWebResource(createClient(), domain);
         final WebResource.Builder requestBuilder = webResource.getRequestBuilder();
-        final String requestBody = context.expandBodyField(body);
+        final byte[] requestBody = context.expandBodyField(body);
         final String upperCaseMethod = method.toUpperCase();
         addHeaders(requestBuilder);
 
         final ClientResponse response;
 
-        if (requestBody != null) {
-            response = requestBuilder.entity(requestBody).method(upperCaseMethod, ClientResponse.class, requestBody);
-        } else {
+        if (ArrayUtils.isEmpty(requestBody)) {
             response = requestBuilder.method(upperCaseMethod, ClientResponse.class);
+        } else {
+            response = requestBuilder.entity(requestBody).method(upperCaseMethod, ClientResponse.class, requestBody);
         }
 
         return response;

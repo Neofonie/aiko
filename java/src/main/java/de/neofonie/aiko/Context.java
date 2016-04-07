@@ -25,8 +25,10 @@ package de.neofonie.aiko;
 
 import de.neofonie.aiko.yaml.Group;
 import de.neofonie.aiko.yaml.TestConfiguration;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -68,14 +70,27 @@ public class Context {
      * @return file content or the string itself
      * @throws IOException
      */
-    public String expandBodyField(final String body) throws IOException {
+    public String expandBodyFieldToString(final String body) throws IOException {
+        return new String(expandBodyField(body), Charset.forName("UTF-8"));
+    }
+
+    /**
+     * Returns the file content if the given body references a file ("@filename.json") otherwise it returns the given
+     * body.
+     *
+     * @param body body, can be a json-string ("{'json': 'text'}") or file reference to a file that contains
+     * json ("@example.json")
+     * @return file content or the string itself
+     * @throws IOException
+     */
+    public byte[] expandBodyField(final String body) throws IOException {
         if (body != null && body.startsWith("@")) {
             String fileName = body.replaceAll("^@", "");
             System.out.println("\t\tImporting file: " + fileName);
             Path file = Paths.get(contextPath, fileName);
-            return new String(Files.readAllBytes(file));
+            return Files.readAllBytes(file);
         }
-        return body;
+        return body != null ? body.getBytes() : ArrayUtils.EMPTY_BYTE_ARRAY;
     }
 
     public List<Group> getTestGroups() {

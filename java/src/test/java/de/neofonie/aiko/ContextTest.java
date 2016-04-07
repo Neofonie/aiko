@@ -43,7 +43,7 @@ public class ContextTest {
     @Test
     public void shouldNotExpandBodyIfNoFileIsReferenced() throws IOException {
         final String expectedExpandedBody = "no file body";
-        final String expandedBody = context.expandBodyField("no file body");
+        final String expandedBody = context.expandBodyFieldToString("no file body");
 
         assertThat(expandedBody).isEqualTo(expectedExpandedBody);
     }
@@ -56,7 +56,7 @@ public class ContextTest {
                 "  \"username\": \"Bret\",\n" +
                 "  \"email\": \"Sincere@april.biz\"\n" +
                 "}";
-        final String expandedBody = context.expandBodyField("@testdata.json");
+        final String expandedBody = context.expandBodyFieldToString("@testdata.json");
 
         assertThat(expandedBody).isEqualTo(expectedExpandedBody);
     }

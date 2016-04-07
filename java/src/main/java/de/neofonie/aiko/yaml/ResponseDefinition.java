@@ -25,11 +25,15 @@ package de.neofonie.aiko.yaml;
 
 import com.sun.jersey.api.client.ClientResponse;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpHeaders;
+import org.apache.http.entity.ContentType;
 import org.json.JSONException;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Map;
 
 import de.neofonie.aiko.Context;
@@ -120,8 +124,18 @@ public class ResponseDefinition {
     }
 
     private boolean isBodyIncorrect(final ClientResponse response, final Context context) throws IOException {
+        final String contentType = response.getHeaders().getFirst(HttpHeaders.CONTENT_TYPE);
+
+        if (contentType != null && contentType.contains(ContentType.APPLICATION_JSON.getMimeType())) {
+            return isJsonIncorrect(response, context);
+        } else {
+            return isByteContentIncorrect(response, context);
+        }
+    }
+
+    private boolean isJsonIncorrect(final ClientResponse response, final Context context) throws IOException {
         final String responseBody = IOUtils.toString(response.getEntityInputStream());
-        final String expectedBody = context.expandBodyField(body);
+        final String expectedBody = context.expandBodyFieldToString(body);
         boolean bodyIncorrect = false;
 
         if (expectedBody != null) {
@@ -136,6 +150,24 @@ public class ResponseDefinition {
                 System.out.println("\t[ERROR] " + e.getMessage().replaceAll("(\\r|\\n|\\r\\n)+", "\n\t"));
                 bodyIncorrect = true;
             }
+        }
+
+        return bodyIncorrect;
+    }
+
+    private boolean isByteContentIncorrect(final ClientResponse response, final Context context) throws IOException {
+        final byte[] responseBody = IOUtils.toByteArray(response.getEntityInputStream());
+        final byte[] expectedBody = context.expandBodyField(body);
+        boolean bodyIncorrect = false;
+
+        if (!Arrays.equals(responseBody, expectedBody)) {
+            System.out.println("\t\t****************************************");
+            System.out.println("\t\tGot: " + responseBody.length + " bytes as " + new String(responseBody, Charset.forName("UTF-8")));
+            System.out.println("\t\t****************************************");
+            System.out.println("\t\tExpected: " + expectedBody.length + " bytes as " + new String(expectedBody, Charset.forName("UTF-8")));
+            System.out.println("\t\t****************************************");
+            System.out.println("\t[ERROR] Byte content did not match!");
+            bodyIncorrect = true;
         }
 
         return bodyIncorrect;
