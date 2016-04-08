@@ -26,7 +26,6 @@ package de.neofonie.aiko;
 import com.github.tomakehurst.wiremock.junit.WireMockClassRule;
 import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.ClientResponse;
-import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.cli.ParseException;
 import org.junit.After;
 import org.junit.Before;
@@ -34,7 +33,6 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -130,60 +128,73 @@ public class RunnerTest {
                 .isInstanceOf(ClientHandlerException.class);
     }
 
+    @Test
+    public void binary() throws IOException, ParseException {
+        final int exitCode = Runner.executeAikoTests("-f", TestUtil.getTestUserDir() + "binary.yml");
+
+        assertThat(exitCode).isEqualTo(0);
+    }
+
     private void createServerRoutes() {
         instanceRule.stubFor(get(urlEqualTo("/users/1"))
                 .withHeader("Accept", equalTo("application/json"))
                 .willReturn(aResponse()
                         .withStatus(ClientResponse.Status.OK.getStatusCode())
-                        .withBody("{\n" +
-                                "                 \"id\": 1,\n" +
-                                "                 \"name\": \"Leanne Graham\",\n" +
-                                "                 \"username\": \"Bret\",\n" +
-                                "                 \"email\": \"Sincere@april.biz\"\n" +
-                                "               }")
+                        .withBody("{\n"
+                                + "                 \"id\": 1,\n"
+                                + "                 \"name\": \"Leanne Graham\",\n"
+                                + "                 \"username\": \"Bret\",\n"
+                                + "                 \"email\": \"Sincere@april.biz\"\n"
+                                + "               }")
                         .withHeader("Content-Type", "application/json; charset=utf-8")
                 ));
         instanceRule.stubFor(post(urlEqualTo("/users"))
                 .withHeader("Accept", equalTo("application/json"))
                 .withHeader("Content-Type", equalTo("application/json"))
-                .withRequestBody(equalToJson("{\n" +
-                        "  \"id\": 1,\n" +
-                        "  \"name\": \"Leanne Graham\",\n" +
-                        "  \"username\": \"Bret\",\n" +
-                        "  \"email\": \"Sincere@april.biz\"\n" +
-                        "}"))
+                .withRequestBody(equalToJson("{\n"
+                        + "  \"id\": 1,\n"
+                        + "  \"name\": \"Leanne Graham\",\n"
+                        + "  \"username\": \"Bret\",\n"
+                        + "  \"email\": \"Sincere@april.biz\"\n"
+                        + "}"))
                 .willReturn(aResponse()
                         .withStatus(ClientResponse.Status.CREATED.getStatusCode())
-                        .withBody("{\n" +
-                                "                 \"id\": 1,\n" +
-                                "                 \"name\": \"Leanne Graham\",\n" +
-                                "                 \"username\": \"Bret\",\n" +
-                                "                 \"email\": \"Sincere@april.biz\"\n" +
-                                "               }")
+                        .withBody("{\n"
+                                + "                 \"id\": 1,\n"
+                                + "                 \"name\": \"Leanne Graham\",\n"
+                                + "                 \"username\": \"Bret\",\n"
+                                + "                 \"email\": \"Sincere@april.biz\"\n"
+                                + "               }")
                         .withHeader("Content-Type", "application/json; charset=utf-8")
                 ));
         instanceRule.stubFor(put(urlEqualTo("/users/1"))
                 .withHeader("Accept", equalTo("application/json"))
                 .withHeader("Content-Type", equalTo("application/json"))
-                .withRequestBody(equalToJson("{\n" +
-                        "  \"id\": 1,\n" +
-                        "  \"name\": \"Leanne Graham\",\n" +
-                        "  \"username\": \"Bret\",\n" +
-                        "  \"email\": \"Sincere@april.biz\"\n" +
-                        "}"))
+                .withRequestBody(equalToJson("{\n"
+                        + "  \"id\": 1,\n"
+                        + "  \"name\": \"Leanne Graham\",\n"
+                        + "  \"username\": \"Bret\",\n"
+                        + "  \"email\": \"Sincere@april.biz\"\n"
+                        + "}"))
                 .willReturn(aResponse()
                         .withStatus(ClientResponse.Status.OK.getStatusCode())
-                        .withBody("{\n" +
-                                "                 \"id\": 1,\n" +
-                                "                 \"name\": \"Leanne Graham\",\n" +
-                                "                 \"username\": \"Bret\",\n" +
-                                "                 \"email\": \"Sincere@april.biz\"\n" +
-                                "               }")
+                        .withBody("{\n"
+                                + "                 \"id\": 1,\n"
+                                + "                 \"name\": \"Leanne Graham\",\n"
+                                + "                 \"username\": \"Bret\",\n"
+                                + "                 \"email\": \"Sincere@april.biz\"\n"
+                                + "               }")
                         .withHeader("Content-Type", "application/json; charset=utf-8")
                 ));
         instanceRule.stubFor(delete(urlEqualTo("/users/1"))
                 .willReturn(aResponse()
                         .withStatus(ClientResponse.Status.NO_CONTENT.getStatusCode())
+                ));
+
+        instanceRule.stubFor(put(urlEqualTo("/binary"))                
+                .willReturn(aResponse()
+                        .withStatus(ClientResponse.Status.CREATED.getStatusCode())
+                        .withHeader("Content-Type", "image/jpeg")
                 ));
     }
 }

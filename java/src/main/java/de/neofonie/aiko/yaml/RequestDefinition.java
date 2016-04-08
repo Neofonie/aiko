@@ -30,6 +30,7 @@ import de.neofonie.aiko.Context;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.util.Map;
 
@@ -94,7 +95,7 @@ public class RequestDefinition {
     public ClientResponse performRequest(final String domain, final Context context) throws IOException {
         final WebResource webResource = getWebResource(createClient(), domain);
         final WebResource.Builder requestBuilder = webResource.getRequestBuilder();
-        final String requestBody = context.expandBodyField(body);
+        final InputStream requestBody = context.expandBodyField(body);
         final String upperCaseMethod = method.toUpperCase();
         addHeaders(requestBuilder);
 

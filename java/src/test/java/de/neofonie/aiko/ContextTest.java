@@ -27,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
+import org.apache.commons.io.IOUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -43,7 +44,7 @@ public class ContextTest {
     @Test
     public void shouldNotExpandBodyIfNoFileIsReferenced() throws IOException {
         final String expectedExpandedBody = "no file body";
-        final String expandedBody = context.expandBodyField("no file body");
+        final String expandedBody = IOUtils.toString(context.expandBodyField("no file body"));
 
         assertThat(expandedBody).isEqualTo(expectedExpandedBody);
     }
@@ -56,7 +57,7 @@ public class ContextTest {
                 "  \"username\": \"Bret\",\n" +
                 "  \"email\": \"Sincere@april.biz\"\n" +
                 "}";
-        final String expandedBody = context.expandBodyField("@testdata.json");
+        final String expandedBody = IOUtils.toString(context.expandBodyField("@testdata.json"));
 
         assertThat(expandedBody).isEqualTo(expectedExpandedBody);
     }
