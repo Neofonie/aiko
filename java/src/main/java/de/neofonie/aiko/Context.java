@@ -25,20 +25,26 @@ package de.neofonie.aiko;
 
 import de.neofonie.aiko.yaml.Group;
 import de.neofonie.aiko.yaml.TestConfiguration;
+import java.io.ByteArrayInputStream;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 
 /**
- * The context is used to hold information about the context path and the test configuration.
+ * The context is used to hold information about the context path and the test
+ * configuration.
  */
 public class Context {
 
     /**
-     * The context path is used to expand the file references within the body of requests / responds.
+     * The context path is used to expand the file references within the body of
+     * requests / responds.
      */
     private final String contextPath;
 
@@ -50,8 +56,10 @@ public class Context {
     /**
      * Creates a new instance with the given arguments.
      *
-     * @param contextPath context path is used to expand the file references within the body of requests / responds.
-     * @param configurationFilePath path to the configuration file. it will be parsed to get the configuration.
+     * @param contextPath context path is used to expand the file references
+     * within the body of requests / responds.
+     * @param configurationFilePath path to the configuration file. it will be
+     * parsed to get the configuration.
      * @throws IOException
      */
     public Context(final String contextPath, final String configurationFilePath) throws IOException {
@@ -60,22 +68,33 @@ public class Context {
     }
 
     /**
-     * Returns the file content if the given body references a file ("@filename.json") otherwise it returns the given
-     * body.
+     * Returns the file content if the given body references a file
+     * ("@filename.json") otherwise it returns the given body.
      *
-     * @param body body, can be a json-string ("{'json': 'text'}") or file reference to a file that contains
-     * json ("@example.json")
+     * @param body body, can be a json-string ("{'json': 'text'}") or file
+     * reference to a file that contains json ("@example.json"). When the
+     * filename start with a "/", it is referenced from the root. Otherwise
+     * the path is resolved relative to the user directory.
      * @return file content or the string itself
      * @throws IOException
      */
-    public String expandBodyField(final String body) throws IOException {
-        if (body != null && body.startsWith("@")) {
-            String fileName = body.replaceAll("^@", "");
-            System.out.println("\t\tImporting file: " + fileName);
-            Path file = Paths.get(contextPath, fileName);
-            return new String(Files.readAllBytes(file));
+    public InputStream expandBodyField(final String body) throws IOException {
+        InputStream result = null;
+        if (body != null) {
+            if (body.startsWith("@")) {
+                String fileName = body.replaceAll("^@", "");                
+                if (fileName != null && !fileName.isEmpty()) {
+                    System.out.println("\t\tImporting file: " + fileName);
+                    Path file = (fileName.startsWith("/"))
+                            ? Paths.get(fileName)
+                            : Paths.get(contextPath, fileName);
+                    result = Files.newInputStream(file, StandardOpenOption.READ);
+                }
+            } else {
+                result = new ByteArrayInputStream(body.getBytes(StandardCharsets.UTF_8));
+            }
         }
-        return body;
+        return result;
     }
 
     public List<Group> getTestGroups() {

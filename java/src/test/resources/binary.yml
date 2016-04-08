@@ -1,0 +1,13 @@
+groups:
+  - name: modify tests
+    domain: http://localhost:8111
+    tests:
+    - name: put binary
+      request:
+        method: PUT
+        uri: /binary
+        body: '@testdata.jpg'
+        headers:
+          Content-Type: 'image/jpg'
+      response:
+        status: 201    

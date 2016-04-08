@@ -33,9 +33,13 @@ import java.io.IOException;
 import java.util.Map;
 
 import de.neofonie.aiko.Context;
+import java.io.InputStream;
+import org.apache.http.HttpHeaders;
+import org.apache.http.entity.ContentType;
 
 /**
- * A definition of a response. It has a HTTP status code. Body and headers are optional.
+ * A definition of a response. It has a HTTP status code. Body and headers are
+ * optional.
  */
 public class ResponseDefinition {
 
@@ -45,8 +49,8 @@ public class ResponseDefinition {
     private Map<String, String> headers;
 
     /**
-     * Optional body, can be a json-string ("{'json': 'text'}") or file reference to a file that contains
-     * json ("@example.json")
+     * Optional body, can be a json-string ("{'json': 'text'}") or file
+     * reference to a file that contains json ("@example.json")
      */
     private String body;
 
@@ -72,13 +76,14 @@ public class ResponseDefinition {
     }
 
     /**
-     * Compares this response with the actual response and returns the result. It checks HTTP status code, headers
-     * and body for equality.
+     * Compares this response with the actual response and returns the result.
+     * It checks HTTP status code, headers and body for equality.
      *
      * @param response actual response
-     * @param context the context is used to expand the body content, if a file is referenced.
-     * @return true - the response matches the definition | false - there are differences between definition and
-     * actual response
+     * @param context the context is used to expand the body content, if a file
+     * is referenced.
+     * @return true - the response matches the definition | false - there are
+     * differences between definition and actual response
      * @throws IOException
      */
     public boolean doesNotMatchResponse(final ClientResponse response, final Context context) throws IOException {
@@ -120,33 +125,65 @@ public class ResponseDefinition {
     }
 
     private boolean isBodyIncorrect(final ClientResponse response, final Context context) throws IOException {
-        final String responseBody = IOUtils.toString(response.getEntityInputStream());
-        final String expectedBody = context.expandBodyField(body);
+        final String contentType = response.getHeaders().getFirst(HttpHeaders.CONTENT_TYPE);
+
+        if (contentType != null && contentType.contains(ContentType.APPLICATION_JSON.getMimeType())) {
+            return isJsonIncorrect(response, context);
+        } else {
+            return isByteContentIncorrect(response, context);
+        }
+    }
+
+    private boolean isJsonIncorrect(final ClientResponse response, final Context context) throws IOException {
         boolean bodyIncorrect = false;
 
-        if (expectedBody != null) {
-            try {
-                JSONAssert.assertEquals(expectedBody, responseBody, JSONCompareMode.NON_EXTENSIBLE);
-            } catch (JSONException | AssertionError e) {
-                System.out.println("\t\t****************************************");
-                System.out.println("\t\tGot: " + responseBody);
-                System.out.println("\t\t****************************************");
-                System.out.println("\t\tExpected: " + expectedBody);
-                System.out.println("\t\t****************************************");
-                System.out.println("\t[ERROR] " + e.getMessage().replaceAll("(\\r|\\n|\\r\\n)+", "\n\t"));
-                bodyIncorrect = true;
+        if (body != null) {
+            String responseBody = IOUtils.toString(response.getEntityInputStream());
+            try (InputStream expectedStream = context.expandBodyField(body)) {
+                if (expectedStream != null) {
+                    String expectedBody = IOUtils.toString(expectedStream);
+                    try {
+                        JSONAssert.assertEquals(expectedBody, responseBody, JSONCompareMode.NON_EXTENSIBLE);
+                    } catch (JSONException | AssertionError e) {
+                        System.out.println("\t\t****************************************");
+                        System.out.println("\t\tGot: " + responseBody);
+                        System.out.println("\t\t****************************************");
+                        System.out.println("\t\tExpected: " + expectedBody);
+                        System.out.println("\t\t****************************************");
+                        System.out.println("\t[ERROR] " + e.getMessage().replaceAll("(\\r|\\n|\\r\\n)+", "\n\t"));
+                        bodyIncorrect = true;
+                    }
+                }
             }
         }
+        return bodyIncorrect;
+    }
 
+    private boolean isByteContentIncorrect(final ClientResponse response, final Context context) throws IOException {
+        boolean bodyIncorrect = false;
+
+        if (body != null) {
+            try (InputStream responseBody = response.getEntityInputStream();
+                    InputStream expectedBody = context.expandBodyField(body)) {
+
+                if (!IOUtils.contentEquals(responseBody, expectedBody)) {
+                    System.out.println("\t\t*****************************************");
+                    System.out.println("\t\tThe response differs from expected result");
+                    System.out.println("\t\t*****************************************");
+                    System.out.println("\t[ERROR] Byte content did not match!");
+                    bodyIncorrect = true;
+                }
+            }
+        }
         return bodyIncorrect;
     }
 
     @Override
     public String toString() {
-        return "ResponseDefinition{" +
-                "headers=" + headers +
-                ", body='" + body + '\'' +
-                ", status=" + status +
-                '}';
+        return "ResponseDefinition{"
+                + "headers=" + headers
+                + ", body='" + body + '\''
+                + ", status=" + status
+                + '}';
     }
 }
