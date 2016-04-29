@@ -98,7 +98,13 @@ public class Engine {
     }
 
     private boolean performTest() throws IOException {
-        System.out.println("\n\t" + TOTAL_TEST_COUNTER + ". Running '" + testCase.getName() + "'...");
+        String testCaseName;
+        if (testCase.getName() == null) {
+            testCaseName = "Test";
+        } else {
+            testCaseName = "'" + testCase.getName() + "'";
+        }
+        System.out.println("\n\t" + TOTAL_TEST_COUNTER + ". Running " + testCaseName + "...");
 
         final RequestDefinition requestDefinition = testCase.getRequest();
         final ResponseDefinition responseDefinition = testCase.getResponse();
