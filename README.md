@@ -84,7 +84,7 @@ If you want to test if the body is really empty, you can specify:
 
 ## Run example tests against jsonplaceholder
 
-    $ java -jar aiko-y.x-SNAPSHOT.jar -f ../../java/src/test/resources/jsonplaceholder-tests.yml
+    $  java -jar target/aiko-x.y-SNAPSHOT.jar -f src/test/resources/jsonplaceholder-tests.yml
 
 
 ### What else do I need to know? ###
