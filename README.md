@@ -82,6 +82,10 @@ If you want to test if the body is really empty, you can specify:
 
     body: ''
 
+## Run example tests against jsonplaceholder
+
+aiko-master/java/target$ java -jar aiko-y.x-SNAPSHOT.jar -f ../../java/src/test/resources/jsonplaceholder-tests.yml
+
 
 ### What else do I need to know? ###
 * After the first error tests in containing group exit with message and next group is tested.
