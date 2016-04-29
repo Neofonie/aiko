@@ -1,0 +1,52 @@
+groups:
+ - name: multipleTest
+   domain: http://jsonplaceholder.typicode.com
+   tests:
+   - name: userTestFirstStep
+     retry:
+       count: 3
+       delay: 3000
+     request:
+       method: GET
+       uri: /users/1
+       headers:
+         Accept: 'application/json'
+     response:
+       headers:
+         Content-Type: 'application/json; charset=utf-8'
+       status: 200
+   - name: userTestSecondStep
+     retry:
+       count: 1
+       delay: 300
+     request:
+       method: GET
+       uri: /users?id=2
+       headers:
+         Accept: 'application/json'
+         Content-Type: 'application/json'
+         Authorization: 'Basic dfdf'
+     response:
+       headers:
+         Content-Type: 'application/json; charset=utf-8'
+       status: 200
+
+ - name: singleTest
+   domain: http://jsonplaceholder.typicode.com
+   tests:
+   - request:
+       method: POST
+       body: '@src/test/resources/testdata.json'
+       uri: /posts
+       headers:
+         Content-Type: 'application/json'
+         Authorization: 'Basic dfdf'
+     response:
+       headers:
+         Content-Type: 'application/json; charset=utf-8'
+       body: '{
+                "id": 1,
+                "name": "Leanne Graham",
+                "username": "Bret",
+                "email": "Sincere@april.biz"}'
+       status: 201
