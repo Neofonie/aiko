@@ -9,7 +9,7 @@ Neofonie Aiko
 ## Test your REST interface ##
 First of all: code and tests are separated from each other, so the person writing tests does not need to know how to code.
 
-### So were are the tests? ###
+### So where are the tests? ###
 You can find them in java/src/test/resources looking like:
 
     groups:
