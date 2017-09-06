@@ -1,7 +1,6 @@
 Neofonie Aiko
 ============
 
-[![Build Status](https://snap-ci.com/Neofonie/aiko/branch/master/build_image)](https://snap-ci.com/Neofonie/aiko/branch/master)
 [![codecov.io](https://codecov.io/github/Neofonie/aiko/coverage.svg?branch=master)](https://codecov.io/github/Neofonie/aiko?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/grade/dd27be975eaf4b70843b915ed0a91639)](https://www.codacy.com/app/muecke-jo/aiko)
 [![Download](https://api.bintray.com/packages/neofonie/maven/aiko/images/download.svg) ](https://bintray.com/neofonie/maven/aiko/_latestVersion)
