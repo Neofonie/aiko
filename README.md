@@ -96,3 +96,4 @@ If you want to test if the body is really empty, you can specify:
 * There already are a few test configurations inside java/src/test/resources to show what is possible.
 
 Have fun! :)
+
