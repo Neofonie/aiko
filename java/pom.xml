@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>de.neofonie</groupId>
     <artifactId>aiko</artifactId>
-    <version>1.6-SNAPSHOT</version>
+    <version>1.7</version>
     <packaging>jar</packaging>
     <name>aiko</name>
 
@@ -54,6 +54,7 @@
         <profile>
             <id>release</id>
             <build>
+		<finalName>application</finalName>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -148,6 +149,7 @@
     </dependencies>
 
     <build>
+	<finalName>application</finalName>
         <plugins>
             <plugin>
               <groupId>org.jacoco</groupId>
